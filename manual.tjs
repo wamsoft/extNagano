@@ -1,0 +1,130 @@
+/**
+ * 擬似コードによるマニュアル
+ * @description 吉里吉里Z 追加トランジションプラグイン extNagano (吉里吉里2 用 DLL の復元版)。
+ *
+ * 12 種類のトランジションを登録します。Layer.beginTransition() または KAG の
+ * trans タグでトランジション名を指定し、オプションを辞書（Dictionary）で渡します。
+ * すべてに共通のオプション time（所要時間・ミリ秒）は必須です。
+ *
+ *   例) layer.beginTransition("scanline", true, %[ time: 500 ]);
+ *
+ * 以下の各擬似関数は「トランジション名」と「指定可能なオプション」を表します。
+ */
+
+/**
+ * 3duniversal : ルール画像の RGB/HSB 値で画素を移動させて切り替える万能効果
+ * @param time 所要時間（ミリ秒, 必須）
+ * @param rule 切り替えに使うルール画像。画像ファイルのパス、またはレイヤオブジェクト
+ * @param type "HSB" または "RGB"（既定 RGB）。ルール成分の解釈を指定
+ * @param speed1 変化前画像のベーススピード（別名 s1）
+ * @param accel1 変化前画像のベース加速度（別名 a1）
+ * @param bound1 変化前画像のハネ返り時間 0-127
+ * @param speed2 変化後画像のベーススピード（別名 s2）
+ * @param accel2 変化後画像のベース加速度（別名 a2）
+ * @param bound2 変化後画像のハネ返り時間 0-127
+ * @description ルール画像の各画素の R(H)=移動開始時間[0-255]、G(S)=移動スピード、
+ * B(B)=移動方向[0:上/63:右/127:下/191:左] として画素を移動させる。
+ */
+function 3duniversal(time, rule, type, speed1, accel1, bound1, speed2, accel2, bound2);
+
+/**
+ * blurfade : ぼかしながらのクロスフェード
+ * @param time 所要時間（ミリ秒, 必須）
+ * @param exponent 切り替えのペース（既定 1。>1 で前半緩やか、<1 で前半急）
+ * @param blur1 元画像のぼかし量（blur1x/blur1y 両方に同値）
+ * @param blur1x 元画像の x 方向ぼかし量
+ * @param blur1y 元画像の y 方向ぼかし量
+ * @param blur2 先画像のぼかし量（blur2x/blur2y 両方に同値）
+ * @param blur2x 先画像の x 方向ぼかし量
+ * @param blur2y 先画像の y 方向ぼかし量
+ * @param prerender 0:毎フレーム生成 / 1:開始前生成(スムーズ) / 2:1の軽量版
+ * @param type 0:平均値ぼかし / 1:バイリニアぼかし
+ */
+function blurfade(time, exponent, blur1, blur1x, blur1y, blur2, blur2x, blur2y, prerender, type);
+
+/**
+ * scanline : スキャンラインごとに左右交互にスライドさせて切り替え
+ * @param time 所要時間（ミリ秒, 必須）
+ */
+function scanline(time);
+
+/**
+ * zoomfade : 元画像を拡大しながら次画像へ切り替え
+ * @param time 所要時間（ミリ秒, 必須）
+ * @param zoom1 元画像の目標ズーム値
+ * @param zoom2 先画像の開始ズーム値
+ */
+function zoomfade(time, zoom1, zoom2);
+
+/**
+ * rgbfade : RGB 成分ごとにタイミングを変えたクロスフェード
+ * @param time 所要時間（ミリ秒, 必須）
+ * @param delayR R 成分の遅れ [0-255]
+ * @param delayG G 成分の遅れ [0-255]
+ * @param delayB B 成分の遅れ [0-255]
+ * @param delayA A 成分の遅れ [0-255]
+ */
+function rgbfade(time, delayR, delayG, delayB, delayA);
+
+/**
+ * spin : 二枚のラインを回転させて切り替え
+ * @param time 所要時間（ミリ秒, 必須）
+ * @param type1 回転タイプ1 (-1:なし / 0,1:直方体回転 / 4-7:ドア回転 等、-1..11)
+ * @param type2 回転タイプ2 (同上)
+ */
+function spin(time, type1, type2);
+
+/**
+ * flutter : 紙をめくり上げるようなトランジション
+ * @param time 所要時間（ミリ秒, 必須）
+ * @param back めくれた紙の背面の色 0xAARRGGBB（AA=00 で前面の反転、AA=ff で 0xffRRGGBB）
+ * @param alpha めくれた紙の背面の透明度
+ * @param slip 紙のズレ量
+ */
+function flutter(time, back, alpha, slip);
+
+/**
+ * book : 本のページをめくるようなトランジション
+ * @param time 所要時間（ミリ秒, 必須）
+ * @param dir -1:ランダム / 0:左頁を右へめくる / 1:右頁を左へめくる
+ */
+function book(time, dir);
+
+/**
+ * imagewipe : 任意のルール画像を使うワイプ
+ * @param time 所要時間（ミリ秒, 必須）
+ * @param rule 切り替えに使うルール画像。画像ファイルのパス、またはレイヤオブジェクト
+ * @param dir 0:白→黒 / 1:黒→白
+ */
+function imagewipe(time, rule, dir);
+
+/**
+ * honeyturn : turn を六角形に拡張しためくり（元 DLL でも未完）
+ * @param time 所要時間（ミリ秒, 必須）
+ * @param size 六角形の一辺の長さ（ピクセル）
+ * @param dir 各六角形の回転方向（1-9 でテンキーと同じ方向）
+ * @param order 六角形の回転する順序（1-9 でテンキーと同じ方向）
+ * @param twist ひねり量
+ */
+function honeyturn(time, size, dir, order, twist);
+
+/**
+ * morphing : 三角形パッチを変形させながらフェード
+ * @param time 所要時間（ミリ秒, 必須）
+ * @param before 変形前の三角形群。三角形1つにつき 6 個(ax1,ay1,ax2,ay2,ax3,ay3)、n個で 6n 個の数値配列
+ * @param after 変形後の三角形群。同様に 6n 個の数値配列
+ * @description 三角形パッチは隙間なく敷き詰めるよう指定する。
+ */
+function morphing(time, before, after);
+
+/**
+ * multiripple : 複数の波紋が広がって切り替え
+ * @param time 所要時間（ミリ秒, 必須）
+ * @param count 波源の個数（1-20）
+ * @param wavecount 各波源の波の個数
+ * @param rwidth 各波源の波の波長
+ * @param maxdrift 各波源の波の振幅スケール（0 で波なし）
+ * @param roundness 円形度（<1.0 縦長楕円 / 1.0 真円 / >1.0 横長楕円）
+ * @param delaylast 最後の 1 個の遅れ（1.0 で遅れ無し、大きいほど遅い）
+ */
+function multiripple(time, count, wavecount, rwidth, maxdrift, roundness, delaylast);
