@@ -8,6 +8,9 @@
 // (WIN/SDL/LIB) でビルドできる。
 //---------------------------------------------------------------------------
 #include "tp_stub.h"
+// ONV2LINK/ONV2UNLINK マクロ (静的リンク時に onV2Link_<プラグイン名> へ
+// リネームし、複数プラグイン同居時のシンボル衝突を避ける) のため include
+#include "simplebinder.hpp"
 
 #include "3duniversal.h"
 #include "blurfade.h"
@@ -23,7 +26,7 @@
 #include "multiripple.h"
 
 //---------------------------------------------------------------------------
-bool onV2Link()
+bool ONV2LINK()
 {
 	// トランジションハンドラプロバイダの登録
 	Register3duniversalTransHandlerProvider();
@@ -41,7 +44,7 @@ bool onV2Link()
 	return true;
 }
 //---------------------------------------------------------------------------
-bool onV2Unlink()
+bool ONV2UNLINK()
 {
 	// トランジションハンドラプロバイダの登録削除
 	Unregister3duniversalTransHandlerProvider();
